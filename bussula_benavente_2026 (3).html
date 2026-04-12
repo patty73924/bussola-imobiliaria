@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bússola Imobiliária · Benavente 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --teal: #0d3d3a;
+    --teal-mid: #1aaa96;
+    --teal-light: #0d8a7a;
+    --gold: #c9a84c;
+    --gold-light: #e0c06e;
+    --gold-dim: #8a6f30;
+    --cream: #f5efe4;
+    --cream-dim: #e8dece;
+    --text: #f0e8d8;
+    --text-dim: #b8aa90;
+    --card-bg: rgba(255,255,255,0.04);
+    --border: rgba(201,168,76,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--teal);
+    color: var(--text);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 10% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(26,170,150,0.15) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 56px;
+  }
+  .header-eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .header-sub {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-top: 16px;
+    text-transform: uppercase;
+  }
+  .signature {
+    font-family: 'Dancing Script', cursive;
+    font-size: 22px;
+    color: var(--gold);
+    margin-top: 20px;
+    opacity: 0.85;
+  }
+
+  /* ── INTRO ── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  .intro-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .intro-card .val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .intro-card .val sup { font-size: 18px; vertical-align: super; }
+  .intro-card .lbl {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .intro-card .trend {
+    font-size: 11px;
+    color: #7fc99a;
+    font-weight: 500;
+  }
+  .trend-down { color: #e07070 !important; }
+
+  /* ── SECTION TITLES ── */
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .section-title em { color: var(--gold-light); font-style: italic; }
+  .section-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+  }
+  .section { margin-bottom: 64px; }
+
+  /* ── ZONE CARDS ── */
+  .zone-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+  .zone-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .zone-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
+  }
+  .zone-card:hover { border-color: rgba(201,168,76,0.6); }
+  .zone-badge {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .zone-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .zone-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .zone-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+  }
+  .zone-price .label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 2px; }
+  .zone-price .amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .zone-price .amount small { font-size: 13px; }
+  .zone-price .range { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .zone-tag {
+    display: inline-block;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    border: 1px solid;
+    font-weight: 500;
+  }
+  .tag-premium { color: var(--gold); border-color: var(--gold-dim); background: rgba(201,168,76,0.08); }
+  .tag-medio { color: #7fc99a; border-color: rgba(127,201,154,0.4); background: rgba(127,201,154,0.06); }
+  .tag-acessivel { color: #7ab8d9; border-color: rgba(122,184,217,0.4); background: rgba(122,184,217,0.06); }
+  .tag-rural { color: #c49a7a; border-color: rgba(196,154,122,0.4); background: rgba(196,154,122,0.06); }
+
+  .zone-bullets { list-style: none; }
+  .zone-bullets li {
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 5px 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .zone-bullets li::before { content: '—'; color: var(--gold-dim); flex-shrink: 0; }
+
+  .zone-supply {
+    margin-top: 12px;
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+  }
+  .zone-supply span { color: var(--cream); font-weight: 500; }
+
+  /* ── CHARTS ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .chart-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+  }
+  .chart-wrap.wide {
+    grid-column: 1 / -1;
+  }
+  .chart-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .chart-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--cream);
+    margin-bottom: 18px;
+  }
+  .chart-container { position: relative; height: 280px; }
+  .chart-container.tall { height: 340px; }
+
+  /* ── CONTEXT TABLE ── */
+  .context-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 16px;
+  }
+  .context-table th {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 500;
+  }
+  .context-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    color: var(--text-dim);
+    vertical-align: top;
+  }
+  .context-table td:first-child { color: var(--cream); font-weight: 400; }
+  .context-table tr:last-child td { border-bottom: none; }
+
+  /* ── INSIGHT BOX ── */
+  .insight-box {
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .insight-box::before {
+    content: '✦';
+    position: absolute;
+    top: -10px; left: 24px;
+    background: var(--teal);
+    padding: 0 8px;
+    color: var(--gold);
+    font-size: 12px;
+  }
+  .insight-box h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .insight-box p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .insight-box p strong { color: var(--cream); font-weight: 500; }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    line-height: 1.8;
+  }
+  .footer .sig { font-family: 'Dancing Script', cursive; font-size: 18px; color: var(--gold); display: block; margin-top: 10px; }
+
+  /* ── DEMAND INDEX ── */
+  .demand-bar-wrap { margin-bottom: 14px; }
+  .demand-bar-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px; }
+  .demand-bar-label span:first-child { color: var(--cream); }
+  .demand-bar-label span:last-child { color: var(--gold-light); font-family: 'Cormorant Garamond', serif; font-size: 14px; }
+  .demand-bar-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .demand-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold-light)); border-radius: 2px; }
+
+  @media (max-width: 700px) {
+    .intro-grid { grid-template-columns: 1fr; }
+    .chart-grid { grid-template-columns: 1fr; }
+    .chart-wrap.wide { grid-column: auto; }
+    .zone-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-eyebrow">Bússola Imobiliária · Concelho de Benavente</div>
+    <h1>Estudo de Mercado<br><em>Imobiliário por Zona</em></h1>
+    <div class="header-sub">Análise de preços, oferta e perfil de procura · Abril 2026</div>
+    <div class="signature">Patrícia Leal · Bússola Imobiliária</div>
+  </div>
+
+  <!-- KPIs MACRO -->
+  <div class="intro-grid">
+    <div class="intro-card">
+      <div class="lbl">Preço médio/m² · Benavente</div>
+      <div class="val">2.328<sup>€</sup></div>
+      <div class="trend">▲ +27% vs. fev. 2025</div>
+    </div>
+    <div class="intro-card">
+      <div class="lbl">Variação anual · Portugal</div>
+      <div class="val">+18,9<sup>%</sup></div>
+      <div class="trend">2.º maior crescimento UE · Q4 2025</div>
+    </div>
+    <div class="intro-card">
+      <div class="lbl">Preço médio moradia · Benavente</div>
+      <div class="val">710<sup>k€</sup></div>
+      <div class="trend">▲ Oferta crescente de luxo</div>
+    </div>
+  </div>
+
+  <!-- ZONA POR ZONA -->
+  <div class="section">
+    <div class="section-title">Análise <em>por Zona</em></div>
+    <div class="section-desc">Preços de mercado actuais por localização específica · Fontes: Idealista, Imovirtual, Supercasa, Mitula · Abril 2026</div>
+
+    <div class="zone-grid">
+
+      <!-- 1. BENAVENTE VILA -->
+      <div class="zone-card">
+        <div class="zone-badge"><div class="dot"></div>Zona Urbana</div>
+        <h3>Benavente Vila</h3>
+        <div class="zone-price-row">
+          <div class="zone-price">
+            <div class="label">Preço/m² médio</div>
+            <div class="amount">2.328<small> €/m²</small></div>
+            <div class="range">Apartamentos: 165k – 350k€</div>
+          </div>
+          <span class="zone-tag tag-medio">Médio</span>
+        </div>
+        <ul class="zone-bullets">
+          <li>Tipologias predominantes: T2/T3 em apartamento</li>
+          <li>Moradias de reabilitação: 300k – 600k€</li>
+          <li>Moradias novas em urbanização: 450k – 700k€</li>
+          <li>Centro histórico com potencial de renovação</li>
+          <li>Proximidade a serviços, escolas, comércio</li>
+        </ul>
+        <div class="zone-supply">Oferta activa estimada: <span>Oferta moderada</span></div>
+      </div>
+
+      <!-- 2. MATA DO DUQUE -->
+      <div class="zone-card">
+        <div class="zone-badge"><div class="dot"></div>Zona Premium Rural</div>
+        <h3>Mata do Duque</h3>
+        <div class="zone-price-row">
+          <div class="zone-price">
+            <div class="label">Preço médio anunciado</div>
+            <div class="amount">1.2<small> M€</small></div>
+            <div class="range">Quintas: 700k – 3M€ · lotes: 170k–250k€</div>
+          </div>
+          <span class="zone-tag tag-premium">Premium</span>
+        </div>
+        <ul class="zone-bullets">
+          <li>350 ha de área residencial de muito baixa densidade</li>
+          <li>Lotes de 10.000 a 65.000 m² de terreno</li>
+          <li>Moradias T4–T7 com piscina e jardim privativo</li>
+          <li>próximo de Lisboa · proximidade equestre (Campline)</li>
+          <li>Arquitectura integrada na paisagem do Ribatejo</li>
+        </ul>
+        <div class="zone-supply">Oferta activa estimada: <span>Oferta reduzida</span></div>
+      </div>
+
+      <!-- 3. AREIAS -->
+      <div class="zone-card">
+        <div class="zone-badge"><div class="dot"></div>Zona Rural / Campo</div>
+        <h3>Areias</h3>
+        <div class="zone-price-row">
+          <div class="zone-price">
+            <div class="label">Preço médio moradia</div>
+            <div class="amount">280<small> k€</small></div>
+            <div class="range">Amplitude: 150k – 600k€</div>
+          </div>
+          <span class="zone-tag tag-acessivel">Acessível</span>
+        </div>
+        <ul class="zone-bullets">
+          <li>Aldeia rural da lezíria ribatejana</li>
+          <li>Oferta escassa · muito poucas transacções</li>
+          <li>Casas térreas e quintas de reabilitação</li>
+          <li>Perfil de comprador: fuga ao urbano, segunda habitação</li>
+          <li>Terrenos agrícolas com potencial construtivo</li>
+        </ul>
+        <div class="zone-supply">Oferta activa estimada: <span>Oferta muito reduzida</span></div>
+      </div>
+
+      <!-- 4. HERDADE DO ZAMBUJEIRO -->
+      <div class="zone-card">
+        <div class="zone-badge"><div class="dot"></div>Zona Residencial de Prestígio</div>
+        <h3>Herdade do Zambujeiro</h3>
+        <div class="zone-price-row">
+          <div class="zone-price">
+            <div class="label">Preço médio moradia</div>
+            <div class="amount">750<small> k€</small></div>
+            <div class="range">Amplitude: 335k – 1.5M€</div>
+          </div>
+          <span class="zone-tag tag-premium">Premium</span>
+        </div>
+        <ul class="zone-bullets">
+          <li>Enclave rural exclusivo em Santo Estêvão</li>
+          <li>Lotes de 1 a 2 hectares com segurança 24h</li>
+          <li>Moradias T3–T4+ com piscina, jardim, furo de água</li>
+          <li>Próximo do campo de golfe (2 min)</li>
+          <li>Terrenos rústicos a partir de 100k€ (10.000 m²)</li>
+        </ul>
+        <div class="zone-supply">Oferta activa estimada: <span>Oferta reduzida</span></div>
+      </div>
+
+      <!-- 5. SANTO ESTÊVÃO VILA -->
+      <div class="zone-card">
+        <div class="zone-badge"><div class="dot"></div>Núcleo de Aldeia</div>
+        <h3>Santo Estêvão · Vila</h3>
+        <div class="zone-price-row">
+          <div class="zone-price">
+            <div class="label">Preço médio</div>
+            <div class="amount">320<small> k€</small></div>
+            <div class="range">Casas: 200k – 550k€</div>
+          </div>
+          <span class="zone-tag tag-medio">Médio</span>
+        </div>
+        <ul class="zone-bullets">
+          <li>Vila com serviços: mercado, farmácia, restaurantes</li>
+          <li>Margem do rio Almançor · Reserva Natural Estuário do Tejo</li>
+          <li>Tipologias mistas: apartamentos T2/T3 e moradias</li>
+          <li>Procura por residência permanente e segunda habitação</li>
+          <li>Boa base de infraestrutura local</li>
+        </ul>
+        <div class="zone-supply">Oferta activa estimada: <span>Oferta moderada</span></div>
+      </div>
+
+      <!-- 6. VILA NOVA DE SANTO ESTÊVÃO (GOLFE) -->
+      <div class="zone-card">
+        <div class="zone-badge"><div class="dot"></div>Condomínio Fechado · Golfe</div>
+        <h3>Vila Nova de Santo Estêvão</h3>
+        <div class="zone-price-row">
+          <div class="zone-price">
+            <div class="label">Preço médio moradia</div>
+            <div class="amount">950<small> k€</small></div>
+            <div class="range">Amplitude: 545k – 1.8M€</div>
+          </div>
+          <span class="zone-tag tag-premium">Premium+</span>
+        </div>
+        <ul class="zone-bullets">
+          <li>673 lotes · golfe 18 buracos · lago de 14 ha</li>
+          <li>Segurança 24h · condomínio fechado de luxo</li>
+          <li>próximo de Lisboa pela A13 · A13</li>
+          <li>Moradias T3–T5 novas e em construção</li>
+          <li>Centro equestre Campline · canoagem no lago</li>
+        </ul>
+        <div class="zone-supply">Oferta activa estimada: <span>Oferta moderada</span></div>
+      </div>
+
+      <!-- 7. CAMPO SANTO ESTÊVÃO -->
+      <div class="zone-card">
+        <div class="zone-badge"><div class="dot"></div>Zona Rural Dispersa</div>
+        <h3>Campo de Santo Estêvão</h3>
+        <div class="zone-price-row">
+          <div class="zone-price">
+            <div class="label">Preço médio</div>
+            <div class="amount">400<small> k€</small></div>
+            <div class="range">Herdades: 500k – 3M€ · casas: 200k–600k€</div>
+          </div>
+          <span class="zone-tag tag-rural">Rural</span>
+        </div>
+        <ul class="zone-bullets">
+          <li>Zona de campo aberto e herdades do Ribatejo</li>
+          <li>Perfil: propriedades agrícolas e turismo rural</li>
+          <li>Moradias isoladas em lotes de grande dimensão</li>
+          <li>Proximidade à lezíria e estuário do Tejo</li>
+          <li>Muito baixa densidade de oferta</li>
+        </ul>
+        <div class="zone-supply">Oferta activa estimada: <span>Oferta muito reduzida</span></div>
+      </div>
+
+    </div><!-- /zone-grid -->
+  </div><!-- /section -->
+
+  <!-- GRÁFICOS -->
+  <div class="section">
+    <div class="section-title">Análise <em>Visual</em> do Mercado</div>
+    <div class="section-desc">Comparação de preços, segmentos e dinâmica de oferta por zona</div>
+
+    <div class="chart-grid">
+
+      <!-- Gráfico 1: Preço médio por zona -->
+      <div class="chart-wrap wide">
+        <div class="chart-label">Comparativo</div>
+        <div class="chart-title">Preço Médio Anunciado por Zona (€)</div>
+        <div class="chart-container">
+          <canvas id="chartPrecos"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico 2: Amplitude de preços -->
+      <div class="chart-wrap">
+        <div class="chart-label">Intervalo de mercado</div>
+        <div class="chart-title">Amplitude de Preços por Zona</div>
+        <div class="chart-container">
+          <canvas id="chartAmplitude"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico 3: Segmentação por perfil -->
+      <div class="chart-wrap">
+        <div class="chart-label">Segmentação</div>
+        <div class="chart-title">Perfil de Comprador por Zona</div>
+        <div class="chart-container">
+          <canvas id="chartSegmento"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico 4: Evolução preço/m² Benavente -->
+      <div class="chart-wrap wide">
+        <div class="chart-label">Tendência temporal</div>
+        <div class="chart-title">Evolução do Preço/m² em Benavente (2021–2026)</div>
+        <div class="chart-container">
+          <canvas id="chartEvolucao"></canvas>
+        </div>
+      </div>
+
+    </div><!-- /chart-grid -->
+  </div>
+
+  <!-- ÍNDICE DE PROCURA -->
+  <div class="section">
+    <div class="section-title">Índice de <em>Procura</em></div>
+    <div class="section-desc">Estimativa qualitativa da pressão de procura relativa por zona · escala 0–100</div>
+
+    <div style="max-width: 620px;">
+      <div class="demand-bar-wrap">
+        <div class="demand-bar-label"><span>Vila Nova de Santo Estêvão (Golfe)</span><span>92</span></div>
+        <div class="demand-bar-track"><div class="demand-bar-fill" style="width:92%"></div></div>
+      </div>
+      <div class="demand-bar-wrap">
+        <div class="demand-bar-label"><span>Mata do Duque</span><span>85</span></div>
+        <div class="demand-bar-track"><div class="demand-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="demand-bar-wrap">
+        <div class="demand-bar-label"><span>Herdade do Zambujeiro</span><span>76</span></div>
+        <div class="demand-bar-track"><div class="demand-bar-fill" style="width:76%"></div></div>
+      </div>
+      <div class="demand-bar-wrap">
+        <div class="demand-bar-label"><span>Benavente Vila</span><span>68</span></div>
+        <div class="demand-bar-track"><div class="demand-bar-fill" style="width:68%"></div></div>
+      </div>
+      <div class="demand-bar-wrap">
+        <div class="demand-bar-label"><span>Santo Estêvão · Vila</span><span>60</span></div>
+        <div class="demand-bar-track"><div class="demand-bar-fill" style="width:60%"></div></div>
+      </div>
+      <div class="demand-bar-wrap">
+        <div class="demand-bar-label"><span>Campo de Santo Estêvão</span><span>42</span></div>
+        <div class="demand-bar-track"><div class="demand-bar-fill" style="width:42%"></div></div>
+      </div>
+      <div class="demand-bar-wrap">
+        <div class="demand-bar-label"><span>Areias</span><span>28</span></div>
+        <div class="demand-bar-track"><div class="demand-bar-fill" style="width:28%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="section">
+    <div class="section-title">Insights <em>Estratégicos</em></div>
+    <div class="section-desc">Leituras de mercado para consultora imobiliária · Bússola Imobiliária · Benavente</div>
+
+    <div class="insight-box">
+      <h4>🏆 Zona Premium em Aceleração</h4>
+      <p>O eixo <strong>Mata do Duque – Herdade do Zambujeiro – Vila Nova de Santo Estêvão</strong> representa o segmento de maior valorização do concelho. A procura por parte de famílias de Lisboa à procura de segunda residência ou relocação permanente está a crescer em linha com o teletrabalho e a saturação dos preços urbanos. O perfil típico: comprador 35–55 anos, Lisboa ou estrangeiro, budget acima de 700k€, valoriza privacidade, natureza e acesso equestre/golfe.</p>
+    </div>
+
+    <div class="insight-box">
+      <h4>📈 Benavente Vila — Oportunidade de Repositório</h4>
+      <p>Com <strong>+27% no preço/m² num ano</strong>, o centro de Benavente está a ser "empurrado" para cima pelo efeito de valorização das zonas premium envolventes. Existe ainda oferta de imóveis para reabilitação com potencial de valorização significativo. Tipologias T2/T3 com boa relação preço–qualidade para jovens famílias e investidores.</p>
+    </div>
+
+    <div class="insight-box">
+      <h4>🌿 Campo e Areias — Mercado de Nicho Emergente</h4>
+      <p>As zonas mais rurais (Areias, Campo de Santo Estêvão) têm <strong>oferta muito escassa e procura em crescimento</strong> por parte de compradores que procuram herdades, turismo rural ou projetos de agriturismo. Oportunidade de captura de mandatos únicos sem forte concorrência entre agentes.</p>
+    </div>
+
+    <div class="insight-box">
+      <h4>⚡ Macro: Portugal 2.º na UE em Valorização</h4>
+      <p>No Q4 2025, os preços em Portugal subiram <strong>18,9%</strong> — apenas atrás da Hungria (21,2%) e muito acima da média da Zona Euro (5,1%). Este contexto macro favorece fortemente a narrativa de investimento no concelho de Benavente, especialmente para compradores internacionais e investidores institucionais que procuram diversificação.</p>
+    </div>
+  </div>
+
+  <!-- TABELA COMPARATIVA -->
+  <div class="section">
+    <div class="section-title">Tabela <em>Comparativa</em></div>
+    <div class="section-desc">Resumo das 7 zonas analisadas</div>
+
+    <div style="overflow-x:auto;">
+      <table class="context-table">
+        <thead>
+          <tr>
+            <th>Zona</th>
+            <th>Segmento</th>
+            <th>Preço Mín.</th>
+            <th>Preço Méd.</th>
+            <th>Preço Máx.</th>
+            <th>Perfil Comprador</th>
+            <th>Liquidez</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Benavente Vila</td>
+            <td>Médio</td>
+            <td>165.000€</td>
+            <td>380.000€</td>
+            <td>700.000€</td>
+            <td>Famílias, 1.ª hab.</td>
+            <td>Alta</td>
+          </tr>
+          <tr>
+            <td>Mata do Duque</td>
+            <td>Premium</td>
+            <td>700.000€</td>
+            <td>1.200.000€</td>
+            <td>3.000.000€</td>
+            <td>Lisboa, estrangeiros</td>
+            <td>Média</td>
+          </tr>
+          <tr>
+            <td>Areias</td>
+            <td>Acessível</td>
+            <td>150.000€</td>
+            <td>280.000€</td>
+            <td>600.000€</td>
+            <td>Campo, 2.ª habitação</td>
+            <td>Baixa</td>
+          </tr>
+          <tr>
+            <td>Herdade do Zambujeiro</td>
+            <td>Premium</td>
+            <td>335.000€</td>
+            <td>750.000€</td>
+            <td>1.500.000€</td>
+            <td>Executivos, golfe</td>
+            <td>Média</td>
+          </tr>
+          <tr>
+            <td>Santo Estêvão · Vila</td>
+            <td>Médio</td>
+            <td>200.000€</td>
+            <td>320.000€</td>
+            <td>550.000€</td>
+            <td>Famílias, teletrabalho</td>
+            <td>Média-Alta</td>
+          </tr>
+          <tr>
+            <td>V.N. de Santo Estêvão (Golfe)</td>
+            <td>Premium+</td>
+            <td>545.000€</td>
+            <td>950.000€</td>
+            <td>1.800.000€</td>
+            <td>Executivos, invest.</td>
+            <td>Média</td>
+          </tr>
+          <tr>
+            <td>Campo de Santo Estêvão</td>
+            <td>Rural</td>
+            <td>200.000€</td>
+            <td>400.000€</td>
+            <td>3.000.000€</td>
+            <td>Herdades, turismo</td>
+            <td>Baixa</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Fontes: Idealista, Imovirtual, Supercasa, Mitula, Casa Sapo · Dados de mercado: Fevereiro–Abril 2026<br>
+    Preços de anúncio público · sujeitos a negociação · para fins informativos e de consultoria<br>
+    <span class="sig">Patrícia Leal · Bússola Imobiliária</span>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// Paleta base
+const gold = '#c9a84c';
+const goldLight = '#e0c06e';
+const goldDim = '#8a6f30';
+const tealLight = '#0d8a7a';
+const cream = '#f5efe4';
+const dimText = '#b8aa90';
+
+Chart.defaults.color = dimText;
+Chart.defaults.font.family = 'Montserrat';
+Chart.defaults.font.size = 11;
+
+const zonas = ['Benavente\nVila','Mata do\nDuque','Areias','Herdade do\nZambujeiro','S. Estêvão\nVila','V.N. Sto Estêvão\n(Golfe)','Campo\nSto Estêvão'];
+const zonasShort = ['Benavente','Mata do Duque','Areias','H. Zambujeiro','Sto Estêvão','V.N. Golfe','Campo'];
+
+// ── Chart 1: Preço médio ──
+const ctx1 = document.getElementById('chartPrecos').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: zonasShort,
+    datasets: [{
+      label: 'Preço Médio (€)',
+      data: [380000, 1200000, 280000, 750000, 320000, 950000, 400000],
+      backgroundColor: [
+        'rgba(201,168,76,0.45)', 'rgba(201,168,76,0.85)', 'rgba(122,184,217,0.45)',
+        'rgba(201,168,76,0.75)', 'rgba(127,201,154,0.5)', 'rgba(201,168,76,0.95)',
+        'rgba(196,154,122,0.5)'
+      ],
+      borderColor: [
+        gold, goldLight, '#7ab8d9', goldLight, '#7fc99a', goldLight, '#c49a7a'
+      ],
+      borderWidth: 1.5,
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ' ' + ctx.parsed.y.toLocaleString('pt-PT') + ' €'
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: dimText } },
+      y: {
+        grid: { color: 'rgba(201,168,76,0.08)' },
+        ticks: {
+          color: dimText,
+          callback: v => v >= 1000000 ? (v/1000000).toFixed(1)+'M€' : (v/1000)+'k€'
+        }
+      }
+    }
+  }
+});
+
+// ── Chart 2: Amplitude ──
+const ctx2 = document.getElementById('chartAmplitude').getContext('2d');
+new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels: zonasShort,
+    datasets: [
+      {
+        label: 'Mínimo',
+        data: [165000, 700000, 150000, 335000, 200000, 545000, 200000],
+        backgroundColor: 'rgba(122,184,217,0.35)',
+        borderColor: '#7ab8d9',
+        borderWidth: 1,
+        borderRadius: 2,
+      },
+      {
+        label: 'Máximo',
+        data: [700000, 3000000, 600000, 1500000, 550000, 1800000, 3000000],
+        backgroundColor: 'rgba(201,168,76,0.35)',
+        borderColor: gold,
+        borderWidth: 1,
+        borderRadius: 2,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: { color: dimText, boxWidth: 10, font: { size: 10 } }
+      },
+      tooltip: {
+        callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString('pt-PT') + ' €' }
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: dimText, font: { size: 9 } } },
+      y: {
+        grid: { color: 'rgba(201,168,76,0.08)' },
+        ticks: { color: dimText, callback: v => v >= 1000000 ? (v/1000000).toFixed(1)+'M€' : (v/1000)+'k€' }
+      }
+    }
+  }
+});
+
+// ── Chart 3: Segmentação donut ──
+const ctx3 = document.getElementById('chartSegmento').getContext('2d');
+new Chart(ctx3, {
+  type: 'doughnut',
+  data: {
+    labels: ['Premium / Luxo', 'Médio Residencial', 'Rural / Campo', 'Acessível'],
+    datasets: [{
+      data: [45, 32, 15, 8],
+      backgroundColor: [
+        'rgba(201,168,76,0.8)', 'rgba(127,201,154,0.6)',
+        'rgba(196,154,122,0.6)', 'rgba(122,184,217,0.6)'
+      ],
+      borderColor: ['#0d3d3a'],
+      borderWidth: 2,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { color: dimText, boxWidth: 10, font: { size: 10 }, padding: 12 }
+      },
+      tooltip: {
+        callbacks: { label: ctx => ' ' + ctx.parsed + '% da oferta' }
+      }
+    }
+  }
+});
+
+// ── Chart 4: Evolução ──
+const ctx4 = document.getElementById('chartEvolucao').getContext('2d');
+new Chart(ctx4, {
+  type: 'line',
+  data: {
+    labels: ['Jan 2021','Jan 2022','Jan 2023','Jan 2024','Jan 2025','Fev 2026'],
+    datasets: [{
+      label: '€/m² Benavente',
+      data: [1100, 1320, 1580, 1750, 1830, 2328],
+      borderColor: gold,
+      backgroundColor: 'rgba(201,168,76,0.08)',
+      pointBackgroundColor: gold,
+      pointBorderColor: '#0d3d3a',
+      pointBorderWidth: 2,
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      fill: true,
+      tension: 0.3,
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString('pt-PT') + ' €/m²' } }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: dimText } },
+      y: {
+        grid: { color: 'rgba(201,168,76,0.08)' },
+        ticks: { color: dimText, callback: v => v.toLocaleString('pt-PT') + ' €' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
