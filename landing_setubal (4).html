@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bússola Imobiliária · Mercado Setúbal 2026</title>
+<meta name="description" content="Análise do mercado imobiliário de Setúbal por zona. Preços actuais, tendências e insights. Abril 2026.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0d3d3a;--teal-mid:#1aaa96;--teal-light:#0d8a7a;
+    --gold:#c9a84c;--gold-light:#e0c06e;--gold-dim:#8a6f30;
+    --cream:#f5efe4;--text:#f0e8d8;--text-dim:#b8aa90;
+    --border:rgba(201,168,76,0.25);--card:rgba(255,255,255,0.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--teal);color:var(--text);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 20%,rgba(201,168,76,0.07) 0%,transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(26,170,150,0.15) 0%,transparent 50%);pointer-events:none;z-index:0;}
+
+  .page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 20px 80px;}
+
+  /* ── HERO ── */
+  .hero{text-align:center;padding:56px 0 40px;border-bottom:1px solid var(--border);}
+  .hero-compass{font-size:36px;margin-bottom:16px;display:block;}
+  .hero-eyebrow{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+  .hero h1{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;line-height:1.1;color:var(--cream);margin-bottom:10px;}
+  .hero h1 em{font-style:italic;color:var(--gold-light);}
+  .hero-sub{font-size:11px;color:var(--text-dim);letter-spacing:1px;line-height:1.7;margin-bottom:20px;}
+  .hero-date{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);}
+
+  /* ── KPIs ── */
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:32px 0;}
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:18px 14px;text-align:center;}
+  .kpi .val{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold-light);line-height:1;margin-bottom:4px;}
+  .kpi .val sup{font-size:14px;vertical-align:super;}
+  .kpi .lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);line-height:1.4;}
+  .kpi .trend{font-size:10px;color:#7fc99a;margin-top:4px;font-weight:500;}
+
+  /* ── SECTION ── */
+  .section-label{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+  .section-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--cream);margin-bottom:20px;line-height:1.2;}
+  .section-title em{font-style:italic;color:var(--gold-light);}
+  .divider{height:1px;background:var(--border);margin:36px 0;}
+
+  /* ── ZONA CARDS ── */
+  .zona{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden;}
+  .zona::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));}
+  .zona-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+  .zona-nome{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);line-height:1.2;}
+  .zona-tag{font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;border:1px solid;flex-shrink:0;margin-left:10px;margin-top:4px;}
+  .tag-p{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,0.08);}
+  .tag-m{color:#7fc99a;border-color:rgba(127,201,154,0.4);background:rgba(127,201,154,0.06);}
+  .tag-a{color:#7ab8d9;border-color:rgba(122,184,217,0.4);background:rgba(122,184,217,0.06);}
+  .zona-preco{font-size:11px;color:var(--text-dim);margin-bottom:8px;}
+  .zona-preco strong{color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-size:16px;}
+  .zona-desc{font-size:11px;color:var(--text-dim);line-height:1.6;}
+  .zona-procura{margin-top:12px;}
+  .procura-label{display:flex;justify-content:space-between;font-size:9px;color:var(--text-dim);margin-bottom:4px;}
+  .procura-label span:last-child{color:var(--gold-light);}
+  .procura-track{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+  .procura-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));border-radius:2px;}
+
+  /* ── TENDÊNCIA ── */
+  .trend-box{background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:6px;padding:20px;margin-bottom:12px;}
+  .trend-box h4{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold-light);margin-bottom:8px;}
+  .trend-box p{font-size:12px;color:var(--text-dim);line-height:1.7;}
+  .trend-box p strong{color:var(--cream);}
+
+  /* ── CTA ── */
+  .cta-section{margin-top:40px;text-align:center;}
+  .cta-eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+  .cta-title{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--cream);margin-bottom:10px;line-height:1.2;}
+  .cta-title em{font-style:italic;color:var(--gold-light);}
+  .cta-desc{font-size:12px;color:var(--text-dim);line-height:1.7;margin-bottom:28px;}
+  .cta-btn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#1a5c1a,#25801e);border:none;border-radius:6px;color:white;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;text-align:center;margin-bottom:12px;}
+  .cta-btn:hover{opacity:.9;}
+  .cta-note{font-size:10px;color:var(--text-dim);line-height:1.6;}
+
+  /* ── FOOTER ── */
+  .footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);text-align:center;}
+  .footer .sig{font-family:'Dancing Script',cursive;font-size:22px;color:var(--gold);display:block;margin-bottom:6px;}
+  .footer .info{font-size:9px;color:var(--text-dim);letter-spacing:1px;line-height:1.8;}
+
+  /* Sticky CTA */
+  .sticky-cta{position:fixed;bottom:0;left:0;right:0;background:rgba(10,45,40,0.97);border-top:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;z-index:100;backdrop-filter:blur(8px);}
+  .sticky-cta .text{font-size:10px;color:var(--text-dim);}
+  .sticky-cta .text strong{color:var(--cream);display:block;font-size:11px;}
+  .sticky-cta a{display:inline-block;padding:10px 18px;background:linear-gradient(135deg,#1a5c1a,#25801e);border-radius:4px;color:white;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="hero-compass">🧭</span>
+    <div class="hero-eyebrow">Bússola Imobiliária · Setúbal</div>
+    <h1>Mercado<br><em>Imobiliário</em><br>Setúbal 2026</h1>
+    <p class="hero-sub">Análise actualizada por zona — preços, tendências e o que está a acontecer no mercado agora.</p>
+    <div class="hero-date">Abril 2026</div>
+    <p style="font-size:10px;color:var(--text-dim);margin-top:14px;line-height:1.6;padding:10px 14px;border:1px solid rgba(201,168,76,0.15);border-radius:4px;">Análise baseada em dados de anúncios públicos e relatórios de mercado. Os valores indicados são referenciais e podem variar.</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="val">3.033<sup>€</sup></div>
+      <div class="lbl">Preço médio/m² Setúbal cidade</div>
+      <div class="trend">▲ Novo máximo histórico</div>
+    </div>
+    <div class="kpi">
+      <div class="val">+15,7<sup>%</sup></div>
+      <div class="lbl">Valorização anual · Setúbal distrito</div>
+      <div class="trend">5.ª maior subida nacional</div>
+    </div>
+    <div class="kpi">
+      <div class="val">870<sup>k€</sup></div>
+      <div class="lbl">Preço médio moradia Azeitão</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="font-size:20px;padding-top:4px;">Maior<br>oferta</div>
+      <div class="lbl">Azeitão lidera a oferta da região</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ZONAS -->
+  <div class="section-label">Análise por zona</div>
+  <div class="section-title">O que está a acontecer<br><em>em cada zona</em></div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Bairro do Liceu · Vanicelos</div>
+      <span class="zona-tag tag-p">Prestígio</span>
+    </div>
+    <div class="zona-preco">A partir de 160k€ · Média <strong>400k€</strong></div>
+    <div class="zona-desc">O bairro mais procurado de Setúbal. Parque de Vanicelos, vistas para a Arrábida. elevada dinâmica de mercado.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Muito Alta</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:88%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Alto da Guerra</div>
+      <span class="zona-tag tag-m">Crescimento</span>
+    </div>
+    <div class="zona-preco">A partir de 228k€ · Média <strong>380k€</strong></div>
+    <div class="zona-desc">A zona mais activa de Setúbal com a maior oferta activa de Setúbal. Nova construção em entrega 2025/2026. Grande dinâmica de mercado.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Alta</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:82%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Azeitão</div>
+      <span class="zona-tag tag-p">Premium+</span>
+    </div>
+    <div class="zona-preco">A partir de 224k€ · Média <strong>870k€</strong></div>
+    <div class="zona-desc">O mercado mais dinâmico da região. Serra da Arrábida, golfe e vinho. Crescente interesse de compradores internacionais.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Muito Alta</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:94%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Volta da Pedra</div>
+      <span class="zona-tag tag-m">Médio-Alto</span>
+    </div>
+    <div class="zona-preco">A partir de 320k€ · Média <strong>450k€</strong></div>
+    <div class="zona-desc">Zona familiar consolidada junto ao Colégio St. Peter's School. Moradias T3/T4 em lote. Em valorização crescente.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Alta</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:74%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Viso</div>
+      <span class="zona-tag tag-m">Médio-Alto</span>
+    </div>
+    <div class="zona-preco">A partir de 250k€ · Média <strong>350k€</strong></div>
+    <div class="zona-desc">Zona residencial consolidada com vistas ao estuário do Sado. Identidade histórica forte. Procura sólida e constante.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Alta</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:70%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Monte Belo</div>
+      <span class="zona-tag tag-m">Médio</span>
+    </div>
+    <div class="zona-preco">A partir de 230k€ · Média <strong>320k€</strong></div>
+    <div class="zona-desc">Monte Belo Sul (Jardins do Sado) — a sub-zona mais procurada. Potencial de arrendamento interessante para imóveis remodelados.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Média-Alta</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:65%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Montalvão</div>
+      <span class="zona-tag tag-m">Central</span>
+    </div>
+    <div class="zona-preco">A partir de 145k€ · Média <strong>310k€</strong></div>
+    <div class="zona-desc">Bairro histórico central. Melhor relação preço/localização de Setúbal. Procura crescente de investidores e jovens compradores.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Média</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:60%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Vila Maria</div>
+      <span class="zona-tag tag-m">Médio</span>
+    </div>
+    <div class="zona-preco">A partir de 210k€ · Média <strong>290k€</strong></div>
+    <div class="zona-desc">Zona residencial tranquila com ambiente familiar. Oferta reduzida — pouca concorrência, boa visibilidade.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Média</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:50%"></div></div>
+    </div>
+  </div>
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Fonte da Lavra</div>
+      <span class="zona-tag tag-a">Acessível</span>
+    </div>
+    <div class="zona-preco">A partir de 130k€ · Média <strong>278k€</strong></div>
+    <div class="zona-desc">A zona mais acessível de Setúbal cidade. Nova construção a chegar. Boa opção para primeira habitação e investimento com potencial de arrendamento.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Em crescimento</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:44%"></div></div>
+    </div>
+  </div>
+
+
+  <div class="zona">
+    <div class="zona-top">
+      <div class="zona-nome">Zona Ribeirinha</div>
+      <span class="zona-tag tag-m">Centro Histórico</span>
+    </div>
+    <div class="zona-preco">A partir de 65k€ · Média <strong>320k€</strong></div>
+    <div class="zona-desc">Coração histórico de Setúbal — Avenida Luísa Todi, frente ao Sado, Mercado do Livramento. Zona em regeneração activa com reabilitação urbana e nova construção premium.</div>
+    <div class="zona-procura">
+      <div class="procura-label"><span>Dinâmica de procura</span><span>Alta</span></div>
+      <div class="procura-track"><div class="procura-fill" style="width:72%"></div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TENDÊNCIAS -->
+  <div class="section-label">O que os dados dizem</div>
+  <div class="section-title">Tendências<br><em>de mercado</em></div>
+
+  <div class="trend-box">
+    <h4>📈 Novo máximo histórico em Fevereiro 2026</h4>
+    <p>O preço/m² em Setúbal cidade atingiu <strong>3.033€</strong> — novo máximo histórico com +13,5% anual. O centro da cidade já ultrapassa os 3.200€/m².</p>
+  </div>
+  <div class="trend-box">
+    <h4>🌍 Procura internacional em aceleração</h4>
+    <p>Azeitão e a Serra da Arrábida estão a atrair compradores do <strong>vários mercados europeus</strong>. O preço médio de moradia em Azeitão está nos 870k€.</p>
+  </div>
+  <div class="trend-box">
+    <h4>🚀 Setúbal como alternativa a Lisboa</h4>
+    <p>Próximo de Lisboa pela A2, com preços significativamente abaixo da capital. Teletrabalho e qualidade de vida estão a atrair famílias e profissionais de forma crescente.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-eyebrow">Quer saber mais?</div>
+    <div class="cta-title">Receba o estudo<br><em>completo</em></div>
+    <p class="cta-desc">Análise detalhada por zona, gráficos de evolução de preços, perfis de comprador e insights mensais actualizados. Envie-me mensagem e recebe o estudo completo, sem compromisso.</p>
+    <a class="cta-btn" href="https://wa.me/351915138733?text=Olá%20Patrícia,%20vi%20a%20análise%20de%20mercado%20de%20Setúbal%20e%20gostaria%20de%20receber%20o%20estudo%20completo." target="_blank">
+      📲 Pedir Estudo Completo via WhatsApp
+    </a>
+    <p class="cta-note">Respondo em menos de 24 horas. Sem spam, sem compromisso.</p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="sig">Patrícia Leal · Bússola Imobiliária</span>
+    <div class="info">
+      Consultora Imobiliária · Distinct<br>
+      Zona Benavente · Zona Setúbal<br>
+      Dados: Idealista, Imovirtual, Supercasa · Abril 2026<br>
+      Preços de anúncio público · sujeitos a verificação · para fins informativos
+    </div>
+  </div>
+
+</div>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta">
+  <div class="text">
+    <strong>Quer o estudo completo?</strong>
+    Grátis, sem compromisso
+  </div>
+  <a href="https://wa.me/351915138733?text=Olá%20Patrícia,%20vi%20a%20análise%20de%20mercado%20de%20Setúbal%20e%20gostaria%20de%20receber%20o%20estudo%20completo." target="_blank">
+    Pedir via WhatsApp
+  </a>
+</div>
+
+</body>
+</html>
